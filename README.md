@@ -1,19 +1,28 @@
 # gcp-nginx-ingress-l4ilb-example
 
 
-As of June 29, 2020 [L7 Internal Load Balancing on GCP
+> As of June 29, 2020,  [L7 Internal Load Balancing on GCP
 ](https://cloud.google.com/load-balancing/docs/l7-internal#shared_vpc) is a feature availble in the Alpha
-release phase and the project _must be whiteliste_. Additionally, this alpha release does not yet include L7 ILB
-launched and managed by GKE.
+release phase which requires the project to be whitelisted.
 
-Because of this current limitation, a long standing architectural pattern is to be relied on. Here, one will find that pattern
-which will allow for TLS Termination _inside_ of the GKE cluster via [nginx-ingress](https://kubernetes.github.io/ingress-nginx/). 
+Additionally, this alpha release does not yet include L7 ILB launched and managed by GKE.
 
-Internal Load Balancer exposition to the shared VPC network is to be provided by the GA supported [L4 Internal Load Balancer](
+Because of this current limitation, a long standing architectural pattern is to be relied on: Terminate SSL upstream. 
+Here, one will find that pattern which will allow for TLS Termination _inside_ of the GKE cluster via
+[nginx-ingress](https://kubernetes.github.io/ingress-nginx/). 
+
+  Internal Load Balancer exposition to the shared VPC network is to be provided by the GA supported [L4 Internal Load Balancer](
 https://cloud.google.com/load-balancing/docs/internal/). A request sent to this ILB would be, via forwarding rule, be forwarded 
 to the regional internal backend service and onto the targets inside the gke nodepool via their NodePort exposition from the nginx-ingress.
 
-This code sample assumes that you are bringing your own certificate and storing them within a kubernetes secret object. If you 
+![L4 ILB](https://cloud.google.com/load-balancing/images/ilb-high-level.svg)
+
+
+This code sample assumes that you are bringing your own certificate. It assumes you bypass the CSR and/or interacting with PKI and you directly
+store such sensitive files within a kubernetes secret object. For your safety, it also assumes that RBAC is an accepted concept and set up properly to 
+discourage deny unintended actors access to such sensitive content. 
+
+For self-signing in a testing context: you 
 are picking this up for testing, [you can self-sign certs with the openssl cli tool,
 ](https://kubernetes.github.io/ingress-nginx/examples/PREREQUISITES/#tls-certificates) and then, you can import the resulting
 ca, server key, (and optionally client key), [files as kubernetes secrets](
