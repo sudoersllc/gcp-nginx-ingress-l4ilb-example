@@ -11,6 +11,14 @@ Because of this current limitation, a long standing architectural pattern is to 
 Here, one will find that pattern which will allow for TLS Termination _inside_ of the GKE cluster via
 [nginx-ingress](https://kubernetes.github.io/ingress-nginx/). 
 
+```
++--------+        +--------------------------+          +--------------+
+|L4 ILB  +--------+   https://nginx-ingress  +----------+ClusterIP Svc |
+|        |        |                          |          |              |
++--------+        +--------------------------+          +--------------+
+```
+
+
   Internal Load Balancer exposition to the shared VPC network is to be provided by the GA supported [L4 Internal Load Balancer](
 https://cloud.google.com/load-balancing/docs/internal/). A request sent to this ILB would be, via forwarding rule, be forwarded 
 to the regional internal backend service and onto the targets inside the gke nodepool via their NodePort exposition from the nginx-ingress.
