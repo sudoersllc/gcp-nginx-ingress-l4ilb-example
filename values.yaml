@@ -1,0 +1,9 @@
+rbac.create: true
+controller.publishService.enabled: true
+#controller.service.type: NodePort
+
+controller:
+  service:
+    type: NodePort
+    annotations:
+      kubernetes.io/ingress.class: nginx
