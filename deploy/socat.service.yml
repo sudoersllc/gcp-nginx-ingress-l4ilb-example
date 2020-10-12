@@ -4,6 +4,8 @@ metadata:
   name: socat-service
   labels:
     app: socat-service
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: ClusterIP
   ports:
