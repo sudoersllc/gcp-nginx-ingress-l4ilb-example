@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: socat-int-ing
+  annotations:
+    kubernetes.io/ingress.class: "gce-internal"
+spec:
+  rules:
+  - host: test.a2332.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: socat-service
+          servicePort: 80
